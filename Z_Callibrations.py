@@ -5,6 +5,8 @@ Department of Physics and Astronomy
 
 Metallicity Callibrations for Dwarf Galaxies.
 
+Work in progress.
+
 Code written by Joshua Lemberg
 """
 
