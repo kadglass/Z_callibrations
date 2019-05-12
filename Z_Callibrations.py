@@ -3,7 +3,7 @@ Dr. Kelly Douglass, Joshua Lemberg
 University of Rochester
 Department of Physics and Astronomy
 
-Metallicity Callibrations for Dwarf Galaxies
+Metallicity Callibrations for Dwarf Galaxies.
 
 Code written by Joshua Lemberg
 """
