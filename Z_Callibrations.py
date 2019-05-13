@@ -10,8 +10,10 @@ Work in progress.
 Code written by Joshua Lemberg
 """
 
+import math
 import astropy
 import urllib
+
 def import_data(url_str):
     content = urllib.request.urlopen(url_str)
     return content
