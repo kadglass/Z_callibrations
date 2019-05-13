@@ -9,16 +9,26 @@ Work in progress.
 
 Code written by Joshua Lemberg
 """
-
+import os
 import math
-import astropy
+from astropy.table import Table
 import urllib
 
+## Uses the package urllib to import the data from online table
 def import_data(url_str):
     content = urllib.request.urlopen(url_str)
     return content
 
 
+## Astropy method of reading in data
+    
+def astropy_data_read(filename):
+    os.chdir('/Users/JoshLemberg/Documents/URochester Folder/Research/dwarf-data-folder')
+    # Changing directory to private folder, used to protect data.
+    astro_data = Table.read(filename, format = 'ascii.commented_header')
+    print(astro_data)
+
+## Preliminary method of reading data from table. Does not use Astropy
 def test_data(url_str):
     # Open the file for read-only access
     url_str = "https://www.pas.rochester.edu/~kdouglass/Research/dwarf_voidstatus_P-MJD-F_MPAJHU_ZdustOS_stellarMass_BPT_SFR_NSA_ALFALFA_HI70.txt"
@@ -61,4 +71,4 @@ def main():
     print(test_data(url_str))
 
 
-main()
+#main()
