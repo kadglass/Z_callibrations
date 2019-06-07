@@ -10,7 +10,6 @@ Work in progress.
 Code written by Joshua Lemberg
 """
 import os
-import math
 from astropy.table import Table, Column
 import numpy as np
 
@@ -31,13 +30,13 @@ def astropy_data_read(filename):
     return astro_data
 
 
-
 def make_dict(url_str):
     ''' 
     Idea here is to make a dictionary with all of the idexes as keys and then
     a list of the numbers with that index as the thing that the key is related
     to.
     '''
+    
     
 def adjustForZErr():
     '''
@@ -48,8 +47,10 @@ def adjustForZErr():
     the data that has been removed changes the index and an index out of bounds
     error is thrown after 6506 iterations.
     '''
+    
     tableForZErr = astropy_data_read("dwarfdata.txt")
     shouldRemove = Column(np.arange(len(tableForZErr)), name='shouldRemove')
+    # creates a row which will be filled with a 0 if the data should stay, or a 1 if the data should be removed.
     shouldRemove.fill(0)
     tableForZErr.add_column(shouldRemove, index = 0)
     
@@ -58,7 +59,6 @@ def adjustForZErr():
             tableForZErr["shouldRemove"][i] = 1
         #elif np.isnan(tableForZErr["Z12logOH"][i]):
             #pass
-        
         
     for i in range(0, 11051):
         try:
@@ -73,7 +73,7 @@ def adjustForZErr():
         if tableForZErr["shouldRemove"][i] == 1:
             tableForZErr.remove_rows(i)
         i = i + 1
-        '''
+    '''
             
 
     #print(tableForZErr['index', 'Z12logOH'][0:1])
