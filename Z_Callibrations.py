@@ -11,8 +11,9 @@ Code written by Joshua Lemberg
 """
 import os
 import math
-from astropy.table import Table
+from astropy.table import Table, Column
 import urllib
+import numpy as np
 
 ## Uses the package urllib to import the data from online table
 def import_data(url_str):
@@ -22,38 +23,13 @@ def import_data(url_str):
 
 ## Astropy method of reading in data
     
+# Changing directory to private folder, used to protect data.
 def astropy_data_read(filename):
     os.chdir('/Users/JoshLemberg/Documents/URochester Folder/Research/dwarf-data-folder')
-    # Changing directory to private folder, used to protect data.
     astro_data = Table.read(filename, format = 'ascii.commented_header')
-    print(astro_data)
+    ##print(astro_data)
+    return astro_data
 
-## Preliminary method of reading data from table. Does not use Astropy
-def test_data(url_str):
-    # Open the file for read-only access
-    url_str = "https://www.pas.rochester.edu/~kdouglass/Research/dwarf_voidstatus_P-MJD-F_MPAJHU_ZdustOS_stellarMass_BPT_SFR_NSA_ALFALFA_HI70.txt"
-    infile = import_data(url_str)
-    
-    # Ask for index
-    index = eval(input('What is the index? '))
-
-    # Ask for column
-    col = input('What is the column? ')
-
-    # estabilshing the different cols
-    col_list = infile.readline().decode().split()
-    col_num = col_list.index(col)
-
-    remaining_lines = infile.readlines()
-    realindex = index - 1
-    list_for_index = remaining_lines[realindex]
-    list_for_index_split = list_for_index.decode().split()
-    try:
-        float(list_for_index_split[col_num])
-        output1 = float(list_for_index_split[col_num])
-    except:
-        output1 = print(list_for_index_split[col_num])
-    return output1
 
 
 def make_dict(url_str):
@@ -62,13 +38,82 @@ def make_dict(url_str):
     a list of the numbers with that index as the thing that the key is related
     to.
     '''
+    
+def adjustForZErr():
+    '''
+    This method creates a new table where the only values are ones that have 
+    Error in logOH + 12 to be less than or equal to 0.05
+    
+    FIXME: I can't get it to effectively remove the data. Every time it iterates,
+    the data that has been removed changes the index and an index out of bounds
+    error is thrown after 6506 iterations.
+    '''
+    tableForZErr = astropy_data_read("dwarfdata.txt")
+    shouldRemove = Column(np.arange(len(tableForZErr)), name='shouldRemove')
+    shouldRemove.fill(0)
+    tableForZErr.add_column(shouldRemove, index = 0)
+    
+    for i in range(0, 11051):
+        if np.isnan(tableForZErr["Z12logOH"][i]):
+            tableForZErr["shouldRemove"][i] = 1
+        #elif np.isnan(tableForZErr["Z12logOH"][i]):
+            #pass
+        
+        
+    for i in range(0, 11051):
+        try:
+            if tableForZErr["shouldRemove"][i] == 1:
+                tableForZErr.remove_rows(i)
+        except:
+            continue
+            
+    '''
+    i = 0
+    while i < len(tableForZErr):
+        if tableForZErr["shouldRemove"][i] == 1:
+            tableForZErr.remove_rows(i)
+        i = i + 1
+        '''
+            
+
+    #print(tableForZErr['index', 'Z12logOH'][0:1])
+    print(tableForZErr['index', 'shouldRemove', 'Z12logOH', 'Zerr'])
+
+def adjustForZErrTEST():
+    '''
+    This method creates a new table where the only values are ones that have 
+    Error in logOH + 12 to be less than or equal to 0.05
+    '''
+    tableForZErr = astropy_data_read("dwarfdata.txt")
+    shouldRemove = Column(np.arange(len(tableForZErr)), name='shouldRemove')
+    shouldRemove.fill(0)
+    tableForZErr.add_column(shouldRemove, index = 0)
+    
+    for i in range(0, 11051):
+        if np.isnan(tableForZErr["Z12logOH"][i]):
+            tableForZErr["shouldRemove"][i] = 1
+        #elif np.isnan(tableForZErr["Z12logOH"][i]):
+            #pass
+            
+    #print(tableForZErr['index', 'shouldRemove', 'Z12logOH', 'Zerr'])
+    for i in range(0, 6):
+        
+        if tableForZErr["shouldRemove"][i] != 0:
+            try:
+                tableForZErr.remove_row(i)
+            except:
+                continue
+        
+    print(tableForZErr['index', 'shouldRemove', 'Z12logOH', 'Zerr'][0:10])
 
 def main():
-    #url_str = input("What is the name of the url you wish to input? ")
-    url_str = "https://www.pas.rochester.edu/~kdouglass/Research/dwarf_voidstatus_P-MJD-F_MPAJHU_ZdustOS_stellarMass_BPT_SFR_NSA_ALFALFA_HI70.txt"
-    infile = import_data(url_str)
-    x = infile.readline().decode().split() # .decode() removes the b before the string
-    print(test_data(url_str))
+    table = astropy_data_read("dwarfdata.txt")
+    #table.remove_rows(0)
+    #print(table)
+    
+    print(table['index', 'Z12logOH', 'Zerr'])
+    
+    
 
 
-#main()
+##main()
