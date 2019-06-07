@@ -12,10 +12,10 @@ Code written by Joshua Lemberg
 import os
 import math
 from astropy.table import Table, Column
-import urllib
 import numpy as np
 
 ## Uses the package urllib to import the data from online table
+import urllib
 def import_data(url_str):
     content = urllib.request.urlopen(url_str)
     return content
