@@ -12,6 +12,8 @@ Code written by Joshua Lemberg
 import os
 from astropy.table import Table, Column
 import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib import *
 
 ## Uses the package urllib to import the data from online table
 import urllib
@@ -30,12 +32,28 @@ def astropy_data_read(filename):
     return astro_data
 
 
-def make_dict(url_str):
-    ''' 
-    Idea here is to make a dictionary with all of the idexes as keys and then
-    a list of the numbers with that index as the thing that the key is related
-    to.
-    '''
+## Testing matplotlib and matplotlib.pyplot with sine curves
+def plot():
+    #table = astropy_data_read("dwarfdata.txt")
+    # Compute the x and y coordinates for points on a sine curve
+    x = np.arange(0, 2 * np.pi, 0.001)
+    y = np.sin(x)
+    x1 = np.arange(0, 2 * np.pi, 0.001)
+    y1 = -1 * np.sin(x1)
+    plt.title("sine wave form")
+    plt.plot(x, y, x1, y1)
+    plt.autoscale(True, 'both', None)
+    plt.show()
+    
+plot()
+    
+    
+    
+    
+    
+    
+    
+    
     
     
 def adjustForZErr():
