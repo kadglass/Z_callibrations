@@ -14,48 +14,30 @@ from astropy.table import Table, Column
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import *
-
-## Uses the package urllib to import the data from online table
-import urllib
-def import_data(url_str):
-    content = urllib.request.urlopen(url_str)
-    return content
-
-
-## Astropy method of reading in data
     
-# Changing directory to private folder, used to protect data.
+## Changing directory to private folder, used to protect data.
 def astropy_data_read(filename):
     os.chdir('/Users/JoshLemberg/Documents/URochester Folder/Research/dwarf-data-folder')
     astro_data = Table.read(filename, format = 'ascii.commented_header')
-    ##print(astro_data)
     return astro_data
 
-
-## Testing matplotlib and matplotlib.pyplot with sine curves
+## Function to plot Z vs. Flux Ratios
 def plot():
-    #table = astropy_data_read("dwarfdata.txt")
-    # Compute the x and y coordinates for points on a sine curve
-    x = np.arange(0, 2 * np.pi, 0.001)
-    y = np.sin(x)
-    x1 = np.arange(0, 2 * np.pi, 0.001)
-    y1 = -1 * np.sin(x1)
-    plt.title("sine wave form")
-    plt.plot(x, y, x1, y1)
-    plt.autoscale(True, 'both', None)
+    # Creation of table objects
+    table = astropy_data_read("dwarfdata.txt")
+    fluxTable = astropy_data_read("dwarf_flux.txt")
+
+    # Calculating R_23
+    R_23 = (fluxTable["OII_3727_FLUX"] + fluxTable["OIII_4959_FLUX"] + fluxTable["OIII_5007_FLUX"]) / fluxTable["H_BETA_FLUX"] 
+
+    plt.figure()
+    plt.autoscale(enable = True, axis = 'both', tight = None) # Creates a semilog plot to effectively show data
+    plt.semilogy(table["Z12logOH"][0:9516], fluxTable["NII_6584_FLUX"] / fluxTable["H_ALPHA_FLUX"], ".")
     plt.show()
-    
+
 plot()
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
+## Adjustment of the data for ZErr, NOT USED
 def adjustForZErr():
     '''
     This method creates a new table where the only values are ones that have 
@@ -127,11 +109,7 @@ def adjustForZErrTEST():
 def main():
     table = astropy_data_read("dwarfdata.txt")
     #table.remove_rows(0)
-    #print(table)
+    #print(table)  
+    #print(table['index', 'Z12logOH', 'Zerr'])
     
-    print(table['index', 'Z12logOH', 'Zerr'])
-    
-    
-
-
-##main()
+#main()
